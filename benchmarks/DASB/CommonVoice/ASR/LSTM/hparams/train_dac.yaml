@@ -19,6 +19,7 @@ train_log: !ref <output_folder>/train_log.txt
 
 # Data files
 data_folder: !PLACEHOLDER # e.g, /local/cv-corpus-11.0-2022-09-21/<language>
+cached_data_folder: !PLACEHOLDER # e.g., path/to/cache
 train_tsv_file: !ref <data_folder>/train.tsv  # Standard CommonVoice .tsv files
 dev_tsv_file: !ref <data_folder>/dev.tsv  # Standard CommonVoice .tsv files
 test_tsv_file: !ref <data_folder>/test.tsv  # Standard CommonVoice .tsv files
@@ -27,6 +28,9 @@ train_csv: !ref <save_folder>/train.csv
 valid_csv: !ref <save_folder>/dev.csv
 test_csv: !ref <save_folder>/test.csv
 skip_prep: False # Skip data preparation
+
+tokens_folder: !PLACEHOLDER  # Path to the folder where extracted tokens are saved.
+pretrain_embeddings_folder: none  # Optional: If pretrain_embeddings is True, this should be set to the path where the pretrained embeddings are saved.
 
 avoid_if_longer_than: 10.0
 
@@ -97,6 +101,8 @@ vocab_size: 1024
 model_bitrate: 8kbps
 num_codebooks: 2  # NOTE: must be smaller or equal to the maximum number of codebooks for the given model type
 sample_rate: 24000
+pretrain_embeddings: False
+freeze_embedding: False
 
 # Feature parameters
 encoder_dim: 1024
