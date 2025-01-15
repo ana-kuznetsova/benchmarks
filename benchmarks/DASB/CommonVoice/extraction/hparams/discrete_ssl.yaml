@@ -7,21 +7,23 @@
 
 seed: 1986
 __set_seed: !apply:torch.manual_seed [!ref <seed>]
-output_folder: !ref results/wavlm
+output_folder: !ref results/hubert
 save_folder: !ref <output_folder>/save
 train_log: !ref <output_folder>/extraction_log.txt
 
 # Data files
-data_folder: !PLACEHOLDER  # e.g., /path/to/LibriSpeech
-train_splits: ["train-clean-100"] #, "train-clean-360", "train-other-500"
-dev_splits: ["dev-clean"]
-test_splits: ["dev-clean", "test-clean", "test-other"]
+data_folder: /data/anakuzne/cv/cv-corpus-17.0-2024-03-15/cy
+train_tsv: !ref <data_folder>/train.tsv
+dev_tsv: !ref <data_folder>/dev.tsv
+test_tsv: !ref <data_folder>/test.tsv
+language: cy
+accented_letters: True
 skip_prep: False
-train_csv: !ref <output_folder>/train.csv
-valid_csv: !ref <output_folder>/dev-clean.csv
-test_csv:
-  - !ref <output_folder>/test-clean.csv
-  - !ref <output_folder>/test-other.csv
+convert_to_wav: False
+
+# We remove utterance slonger than 10s in the train/dev/test sets as
+# longer sentences certainly correspond to "open microphones".
+avoid_if_longer_than: 10.0
 
 batch_size: 8
 num_workers: 8
@@ -43,12 +45,12 @@ dataloader_opts:
 
 # ssl_model_type: hubert, wavlm, wav2vec2
 # ssl_hub: facebook/hubert-large-ll60k, microsoft/wavlm-large,  facebook/wav2vec2-large
-ssl_model_type: WavLM
-ssl_hub: microsoft/wavlm-large
+ssl_model_type: hubert
+ssl_hub: facebook/hubert-large-ll60k
 ssl_folder: !ref <save_folder>/ssl_checkpoint
 kmeans_cache_dir: !ref <save_folder>/kmeans_checkpoint
 kmeans_dataset: LibriSpeech
-vocoder_repo_id: speechbrain/hifigan-wavlm-k1000-LibriTTS
+vocoder_repo_id: null
 freeze_ssl: True
 freeze_feature_extractor: True
 vocab_size: 1000

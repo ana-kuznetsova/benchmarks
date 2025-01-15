@@ -12,18 +12,20 @@ save_folder: !ref <output_folder>/save
 train_log: !ref <output_folder>/extraction_log.txt
 
 # Data files
-data_folder: !PLACEHOLDER  # e.g., /path/to/LibriSpeech
-train_splits: ["train-clean-100"] #, "train-clean-360", "train-other-500"
-dev_splits: ["dev-clean"]
-test_splits: ["dev-clean", "test-clean", "test-other"]
+data_folder: /data/anakuzne/cv/cv-corpus-17.0-2024-03-15/cy
+train_tsv: !ref <data_folder>/train.tsv
+dev_tsv: !ref <data_folder>/dev.tsv
+test_tsv: !ref <data_folder>/test.tsv
+language: cy
+accented_letters: True
 skip_prep: False
-train_csv: !ref <output_folder>/train.csv
-valid_csv: !ref <output_folder>/dev-clean.csv
-test_csv:
-  - !ref <output_folder>/test-clean.csv
-  - !ref <output_folder>/test-other.csv
+convert_to_wav: False
 
-batch_size: 8
+# We remove utterance slonger than 10s in the train/dev/test sets as
+# longer sentences certainly correspond to "open microphones".
+avoid_if_longer_than: 10.0
+
+batch_size: 1
 num_workers: 8
 src_key: wav
 id_key: id

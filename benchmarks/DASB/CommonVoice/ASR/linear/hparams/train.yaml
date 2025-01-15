@@ -1,7 +1,6 @@
 # ############################################################################
 # Model: E2E ASR with CTC
-# Auido Tokenizer: Encodec
-# Encoder: LSTM Encoder
+# Encoder: Linear Encoder
 # Decoder: CTC beam searcher and greedy searcher
 # Tokens: character
 # Training: Librispeech 960h
@@ -107,10 +106,10 @@ encoder_dim: 1024
 pretrain_embeddings: False
 freeze_embedding: False
 
-# LSTM
+# Linear
 activation: !name:torch.nn.Sigmoid
 dnn_layers: 2 #  @orion_step1: --dnn_layers~"uniform(1, 4,discrete=True)"
-dnn_neurons: 1024
+dnn_neurons: 2048
 dropout: 0.2
 output_neurons: 31
 
@@ -144,12 +143,12 @@ attention_mlp: !new:model.custom_model.AttentionMLP
    input_dim: !ref <encoder_dim>
    hidden_dim: !ref <encoder_dim>
 
-encoder: !new:speechbrain.nnet.RNN.LSTM
-   input_shape: [Null, Null, !ref <encoder_dim>]
-   num_layers: !ref <dnn_layers>
-   bidirectional: True
-   dropout: !ref <dropout>
-   hidden_size: !ref <dnn_neurons>
+encoder: !new:speechbrain.lobes.models.VanillaNN.VanillaNN
+   input_shape: [null, null, !ref <encoder_dim>]
+   activation: !ref <activation>
+   dnn_blocks: !ref <dnn_layers>
+   dnn_neurons: !ref <dnn_neurons>
+
 
 ctc_lin: !new:speechbrain.nnet.linear.Linear
    input_size: 2048

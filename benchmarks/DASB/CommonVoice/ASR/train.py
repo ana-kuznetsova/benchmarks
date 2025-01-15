@@ -28,6 +28,14 @@ sys.path.append(base_dir)
 logger = logging.getLogger(__name__)
 
 
+def compute_grad_norms(model):
+    total_norm = 0.0
+    for p in model.parameters():
+        if p.grad is not None:
+            param_norm = p.grad.data.norm(2)
+            total_norm += param_norm.item() ** 2
+    total_norm = total_norm ** 0.5
+    return total_norm
 # Define training procedure
 class ASR(sb.Brain):
     def compute_forward(self, batch, stage):
@@ -45,9 +53,8 @@ class ASR(sb.Brain):
         in_embs = torch.matmul(att_w.transpose(2, -1), in_embs).squeeze(
             -2
         )  # [B, T, D]
-
-        # forward modules
-        if type(self.modules.encoder).__name__ == "Linear":
+  
+        if type(self.modules.encoder).__name__ == "VanillaNN":
             enc_out = self.modules.encoder(in_embs)
 
         elif type(self.modules.encoder).__name__ == "LSTM":
@@ -59,7 +66,6 @@ class ASR(sb.Brain):
         # output layer for ctc log-probabilities
         logits = self.modules.ctc_lin(enc_out)
         p_ctc = self.hparams.log_softmax(logits)
-
         p_tokens = None
         if stage == sb.Stage.VALID:
             p_tokens = sb.decoders.ctc_greedy_decode(
@@ -425,13 +431,14 @@ if __name__ == "__main__":
     # Measure time
     start_time = time.time()  # Start the timer
     # Training
-    asr_brain.fit(
-        asr_brain.hparams.epoch_counter,
-        train_data,
-        valid_data,
-        train_loader_kwargs=hparams["train_dataloader_opts"],
-        valid_loader_kwargs=hparams["valid_dataloader_opts"],
-    )
+    with torch.autograd.detect_anomaly():
+        asr_brain.fit(
+            asr_brain.hparams.epoch_counter,
+            train_data,
+            valid_data,
+            train_loader_kwargs=hparams["train_dataloader_opts"],
+            valid_loader_kwargs=hparams["valid_dataloader_opts"],
+        )
 
     end_time = time.time()  # End the timer
     # Calculate elapsed time
