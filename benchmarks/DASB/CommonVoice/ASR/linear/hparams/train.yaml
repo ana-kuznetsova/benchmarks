@@ -28,6 +28,7 @@ train_csv: !ref <save_folder>/train.csv
 valid_csv: !ref <save_folder>/dev.csv
 test_csv: !ref <save_folder>/test.csv
 skip_prep: False # Skip data preparation
+testing: True # If set to True, the test evlaution is done, otherwise skipped.
 
 tokens_folder: !PLACEHOLDER  # Path to the folder where extracted tokens are saved.
 pretrain_embeddings_folder: none  # Optional: If pretrain_embeddings is True, this should be set to the path where the pretrained embeddings are saved.
@@ -111,7 +112,7 @@ dropout: 0.2
 output_neurons: 100
 
 # BPE parameters
-token_type: bpe  # ["unigram", "bpe", "char"]
+token_type: char  # ["unigram", "bpe", "char"]
 character_coverage: 1.0
 blank_index: 0
 unk_index: 1
