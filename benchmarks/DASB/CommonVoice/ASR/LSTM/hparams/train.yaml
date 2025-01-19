@@ -192,7 +192,6 @@ checkpointer: !new:speechbrain.utils.checkpoints.Checkpointer
       model: !ref <model>
       scheduler_model: !ref <lr_annealing_model>
       attention_mlp: !ref <attention_mlp>
-      codec: !ref <codec>
       discrete_embedding_layer: !ref <discrete_embedding_layer>
       counter: !ref <epoch_counter>
       tokenizer: !ref <label_encoder>
