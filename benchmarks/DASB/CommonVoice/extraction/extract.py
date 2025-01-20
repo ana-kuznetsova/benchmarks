@@ -44,10 +44,10 @@ if __name__ == "__main__":
         prepare_common_voice,
         kwargs={
             "data_folder": hparams["data_folder"],
-            "save_folder": hparams["output_folder"],
-            "train_tsv_file": hparams["train_tsv"],
-            "dev_tsv_file": hparams["dev_tsv"],
-            "test_tsv_file": hparams["test_tsv"],
+            "save_folder": hparams["save_folder"],
+            "train_tsv_file": hparams["train_tsv_file"],
+            "dev_tsv_file": hparams["dev_tsv_file"],
+            "test_tsv_file": hparams["test_tsv_file"],
             "accented_letters": hparams["accented_letters"],
             "language": hparams["language"],
             "skip_prep": hparams["skip_prep"],
@@ -56,23 +56,40 @@ if __name__ == "__main__":
 
     tokens_extractor = hparams["tokens_extractor"]
     data_folder = hparams["data_folder"]
-    datasets = []
-    for split in ["train", "dev", "test"]:
-        csv_path = hparams["output_folder"] +f"/{split}.csv"
-        name = pl.Path(csv_path).stem
-        dataset = sb.dataio.dataset.DynamicItemDataset.from_csv(
-            csv_path=csv_path,
-        )
-        datasets.append(dataset)
 
-    merged_data = {
+    train_data = sb.dataio.dataset.DynamicItemDataset.from_csv(
+        csv_path=hparams["train_csv"],
+        replacements={"data_root": data_folder},
+    )
+
+    train_data = train_data.filtered_sorted(
+            sort_key="duration",
+            key_max_value={"duration": hparams["avoid_if_longer_than"]},
+        )
+    # when sorting do not shuffle in dataloader ! otherwise is pointless
+    hparams["dataloader_options"]["shuffle"] = False
+
+    valid_data = sb.dataio.dataset.DynamicItemDataset.from_csv(
+        csv_path=hparams["valid_csv"],
+        replacements={"data_root": data_folder},
+    )
+    valid_data = valid_data.filtered_sorted(sort_key="duration")
+
+    test_data = sb.dataio.dataset.DynamicItemDataset.from_csv(
+        csv_path=hparams["test_csv"],
+        replacements={"data_root": data_folder},
+    )
+    test_data = test_data.filtered_sorted(sort_key="duration")
+    datasets = [train_data, valid_data, test_data]
+
+    merged_dataset = {
         key: value
         for dataset in datasets
         for key, value in dataset.data.items()
     }
-    merged_dataset = DynamicItemDataset(merged_data)
 
     save_folder = pl.Path(hparams["save_folder"])
+
     logger.info("Extracting dataset tokens ...")
     tokens_extractor.extract_tokens(
         merged_dataset,

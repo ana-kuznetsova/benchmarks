@@ -37,11 +37,12 @@ dataloader_opts:
   num_workers: !ref <num_workers>
 
 ### Configuration for  discrete SSL model
-# | SSL Model  | HF Encoder                             | K-Means Dataset | K-Means Size | SSL Layers           | Vocoder Model                            |
-# |------------|----------------------------------------|-----------------|--------------|----------------------|------------------------------------------|
-# | WavLM      | microsoft/wavlm-large                  | LibriSpeech960  | 1000         | 1, 3, 7, 12, 18, 23  | speechbrain/hifigan-wavlm-k1000-LibriTTS |
-# | HuBERT     | facebook/hubert-large-ll60k            | LibriSpeech960  | 1000         | 1, 3, 7, 12, 18, 23  | WIP                                      |
-# | Wav2Vec2   | facebook/wav2vec2-large-960h-lv60-self | LibriSpeech960  | 1000         | 1, 3, 7, 12, 18, 23  | WIP                                      |
+#   | SSL Model  | HF Encoder                             | K-Means Dataset | K-Means Size | SSL Layers           | Vocoder Model                               |
+#   |------------|----------------------------------------|-----------------|--------------|----------------------|---------------------------------------------|
+#    | WavLM      | microsoft/wavlm-large                  | LibriSpeech960  | 1000         | 1, 3, 7, 12, 18, 23  | speechbrain/hifigan-wavlm-k1000-LibriTTS    |
+#    | HuBERT     | facebook/hubert-large-ll60k            | LibriSpeech960  | 1000         | 1, 3, 7, 12, 18, 23  | speechbrain/hifigan-hubert-k1000-LibriTTS   |
+#    | Wav2Vec2   | facebook/wav2vec2-large                | LibriSpeech960  | 1000         | 1, 3, 7, 12, 18, 23  | speechbrain/hifigan-wav2vec2-k1000-LibriTTS |
+
 
 # ssl_model_type: hubert, wavlm, wav2vec2
 # ssl_hub: facebook/hubert-large-ll60k, microsoft/wavlm-large,  facebook/wav2vec2-large
@@ -49,8 +50,8 @@ ssl_model_type: hubert
 ssl_hub: facebook/hubert-large-ll60k
 ssl_folder: !ref <save_folder>/ssl_checkpoint
 kmeans_cache_dir: !ref <save_folder>/kmeans_checkpoint
-kmeans_dataset: LibriSpeech
-vocoder_repo_id: null
+kmeans_dataset: LibriSpeech960
+vocoder_repo_id: speechbrain/hifigan-hubert-k1000-LibriTTS
 freeze_ssl: True
 freeze_feature_extractor: True
 vocab_size: 1000
