@@ -13,9 +13,10 @@ train_log: !ref <output_folder>/extraction_log.txt
 
 # Data files
 data_folder: /data/anakuzne/cv/cv-corpus-17.0-2024-03-15/cy
-train_tsv: !ref <data_folder>/train.tsv
-dev_tsv: !ref <data_folder>/dev.tsv
-test_tsv: !ref <data_folder>/test.tsv
+train_tsv_file: !ref <data_folder>/train.tsv
+dev_tsv_file: !ref <data_folder>/dev.tsv
+test_tsv_file: !ref <data_folder>/test.tsv
+
 language: cy
 accented_letters: True
 skip_prep: False

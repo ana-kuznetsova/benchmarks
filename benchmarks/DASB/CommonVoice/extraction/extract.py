@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     train_data = sb.dataio.dataset.DynamicItemDataset.from_csv(
         csv_path=hparams["train_csv"],
-        replacements={"data_root": data_folder},
+        #replacements={"data_root": data_folder},
     )
 
     train_data = train_data.filtered_sorted(
@@ -71,22 +71,25 @@ if __name__ == "__main__":
 
     valid_data = sb.dataio.dataset.DynamicItemDataset.from_csv(
         csv_path=hparams["dev_csv"],
-        replacements={"data_root": data_folder},
     )
-    valid_data = valid_data.filtered_sorted(sort_key="duration")
+    valid_data = valid_data.filtered_sorted(sort_key="duration",
+                                            )
 
     test_data = sb.dataio.dataset.DynamicItemDataset.from_csv(
         csv_path=hparams["test_csv"],
-        replacements={"data_root": data_folder},
     )
+    k = list(test_data.data.keys())[0]
     test_data = test_data.filtered_sorted(sort_key="duration")
     datasets = [train_data, valid_data, test_data]
+    
+    #NOTE: [anakuzne] we can hack the "id" problem for now by popping it from the dataset.
+   
+    merged_dataset = {}
 
-    merged_dataset = {
-        key: value
-        for dataset in datasets
-        for key, value in dataset.data.items()
-    }
+    for dataset in datasets:
+        for key, value in dataset.data.items():
+            value['ID'] = value.pop('id')
+            merged_dataset[key] = value
 
     save_folder = pl.Path(hparams["save_folder"])
 

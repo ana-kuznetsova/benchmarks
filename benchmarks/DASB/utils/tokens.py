@@ -130,7 +130,6 @@ class TokensExtractor:
         self.writer = kaldiio.WriteHelper(
             self.wspecifier, write_function="numpy"
         )
-
         if isinstance(dataset, dict):
             dataset = DynamicItemDataset(dataset)
         dataset.set_output_keys([self.src_key, self.id_key, "sig"])
