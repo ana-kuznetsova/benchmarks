@@ -17,6 +17,10 @@ train_tsv_file: !ref <data_folder>/train.tsv
 dev_tsv_file: !ref <data_folder>/dev.tsv
 test_tsv_file: !ref <data_folder>/test.tsv
 
+train_csv: !ref <save_folder>/train.csv
+dev_csv: !ref <save_folder>/dev.csv
+test_csv: !ref <save_folder>/test.csv
+
 language: cy
 accented_letters: True
 skip_prep: False

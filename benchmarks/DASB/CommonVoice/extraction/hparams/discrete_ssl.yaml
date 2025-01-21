@@ -13,9 +13,14 @@ train_log: !ref <output_folder>/extraction_log.txt
 
 # Data files
 data_folder: /data/anakuzne/cv/cv-corpus-17.0-2024-03-15/cy
-train_tsv: !ref <data_folder>/train.tsv
-dev_tsv: !ref <data_folder>/dev.tsv
-test_tsv: !ref <data_folder>/test.tsv
+train_tsv_file: !ref <data_folder>/train.tsv
+dev_tsv_file: !ref <data_folder>/dev.tsv
+test_tsv_file: !ref <data_folder>/test.tsv
+
+train_csv: !ref <save_folder>/train.csv
+dev_csv: !ref <save_folder>/dev.csv
+test_csv: !ref <save_folder>/test.csv
+
 language: cy
 accented_letters: True
 skip_prep: False
@@ -44,14 +49,12 @@ dataloader_opts:
 #    | Wav2Vec2   | facebook/wav2vec2-large                | LibriSpeech960  | 1000         | 1, 3, 7, 12, 18, 23  | speechbrain/hifigan-wav2vec2-k1000-LibriTTS |
 
 
-# ssl_model_type: hubert, wavlm, wav2vec2
-# ssl_hub: facebook/hubert-large-ll60k, microsoft/wavlm-large,  facebook/wav2vec2-large
-ssl_model_type: hubert
-ssl_hub: facebook/hubert-large-ll60k
+ssl_model_type: WavLM
+ssl_hub: microsoft/wavlm-large
 ssl_folder: !ref <save_folder>/ssl_checkpoint
 kmeans_cache_dir: !ref <save_folder>/kmeans_checkpoint
-kmeans_dataset: LibriSpeech960
-vocoder_repo_id: speechbrain/hifigan-hubert-k1000-LibriTTS
+kmeans_dataset: LibriSpeech
+vocoder_repo_id: speechbrain/hifigan-wavlm-k1000-LibriTTS
 freeze_ssl: True
 freeze_feature_extractor: True
 vocab_size: 1000
