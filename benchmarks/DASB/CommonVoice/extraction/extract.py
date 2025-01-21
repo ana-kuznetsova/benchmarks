@@ -67,10 +67,10 @@ if __name__ == "__main__":
             key_max_value={"duration": hparams["avoid_if_longer_than"]},
         )
     # when sorting do not shuffle in dataloader ! otherwise is pointless
-    hparams["dataloader_options"]["shuffle"] = False
+    hparams["dataloader_opts"]["shuffle"] = False
 
     valid_data = sb.dataio.dataset.DynamicItemDataset.from_csv(
-        csv_path=hparams["valid_csv"],
+        csv_path=hparams["dev_csv"],
         replacements={"data_root": data_folder},
     )
     valid_data = valid_data.filtered_sorted(sort_key="duration")
