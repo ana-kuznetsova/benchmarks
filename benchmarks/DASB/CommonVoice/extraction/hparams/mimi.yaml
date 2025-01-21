@@ -26,6 +26,7 @@ language: cy
 accented_letters: True
 skip_prep: False
 convert_to_wav: False
+avoid_if_longer_than: 10.0
 
 batch_size: 1
 num_workers: 8
