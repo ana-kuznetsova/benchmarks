@@ -97,7 +97,7 @@ valid_dataloader_opts:
 # Model parameters
 
 activation: !name:torch.nn.Sigmoid
-dnn_layers: 1
+dnn_layers: 1 #  @orion_step1: --dnn_layers~"uniform(1, 4,discrete=True)"
 dnn_neurons: 768
 freeze_encoder: True
 
