@@ -36,7 +36,7 @@ pretrain_embeddings_folder: none  # Optional: If pretrain_embeddings is True, th
 avoid_if_longer_than: 10.0
 
 ####################### Training Parameters ####################################
-number_of_epochs: 30
+number_of_epochs: 20
 batch_size_exponent: 4 # @orion_step1: --batch_size_exponent~"uniform(2, 4,discrete=True)"
 batch_size: !ref 2 ** <batch_size_exponent>
 test_batch_size: 1
