@@ -28,7 +28,7 @@ train_csv: !ref <save_folder>/train.csv
 valid_csv: !ref <save_folder>/dev.csv
 test_csv: !ref <save_folder>/test.csv
 skip_prep: False # Skip data preparation
-testing: True # If set to True, the test evlaution is done, otherwise skipped.
+testing: False # If set to True, the test evlaution is done, otherwise skipped.
 
 tokens_folder: !PLACEHOLDER  # Path to the folder where extracted tokens are saved.
 pretrain_embeddings_folder: none  # Optional: If pretrain_embeddings is True, this should be set to the path where the pretrained embeddings are saved.
@@ -36,7 +36,7 @@ pretrain_embeddings_folder: none  # Optional: If pretrain_embeddings is True, th
 avoid_if_longer_than: 10.0
 
 ####################### Training Parameters ####################################
-number_of_epochs: 30
+number_of_epochs: 20
 batch_size_exponent: 4 # @orion_step1: --batch_size_exponent~"uniform(2, 4,discrete=True)"
 batch_size: !ref 2 ** <batch_size_exponent>
 test_batch_size: 1
