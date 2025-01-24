@@ -119,6 +119,9 @@ deduplicate: [False, False, False, False, False, False]
 bpe_tokenizer_path: [null, null, null, null, null, null]
 sample_rate: 16000
 
+# Feature parameters
+encoder_dim: 1024
+
 # Linear
 activation: !name:torch.nn.Sigmoid
 dnn_layers: 1 #  @orion_step1: --dnn_layers~"uniform(1, 4,discrete=True)"
