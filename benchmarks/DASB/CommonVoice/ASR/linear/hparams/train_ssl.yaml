@@ -100,12 +100,12 @@ valid_dataloader_opts:
 pretrain_embeddings: False
 freeze_embedding: False
 
-ssl_model_type: WavLM
-ssl_hub: microsoft/wavlm-large
+ssl_model_type: Wav2Vec2
+ssl_hub: facebook/wav2vec2-large
 ssl_folder: !ref <save_folder>/ssl_checkpoint
 kmeans_cache_dir: !ref <save_folder>/kmeans_checkpoint
 kmeans_dataset: LibriSpeech
-vocoder_repo_id: speechbrain/hifigan-wavlm-k1000-LibriTTS
+vocoder_repo_id: speechbrain/hifigan-wav2vec2-k1000-LibriTTS
 freeze_ssl: True
 freeze_feature_extractor: True
 vocab_size: 1000
