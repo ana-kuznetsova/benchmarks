@@ -38,10 +38,11 @@ avoid_if_longer_than: 10.0
 ####################### Training Parameters ####################################
 number_of_epochs: 20
 batch_size_exponent: 4 # @orion_step1: --batch_size_exponent~"uniform(2, 4,discrete=True)"
-batch_size: !ref 2 ** <batch_size_exponent>
+#batch_size: !ref 2 ** <batch_size_exponent>
+batch_size: 4
 test_batch_size: 1
-grad_accumulation_factor: 2
-max_grad_norm: 5.0
+#grad_accumulation_factor: 2
+#max_grad_norm: 5.0
 
 sorting: descending #random
 num_workers: 8
