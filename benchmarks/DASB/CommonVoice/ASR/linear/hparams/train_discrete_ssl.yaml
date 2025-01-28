@@ -37,9 +37,9 @@ avoid_if_longer_than: 10.0
 ssl_model_type: hubert # hubert, wavml or wav2vec2
 ssl_hub: facebook/hubert-large-ll60k
 ssl_folder: !ref <save_folder>/ssl_checkpoint
-kmeans_repo_id: speechbrain/SSL_Quantization
+kmeans_repo_id: speechbrain/hifigan-hubert-k1000-LibriTTS
 kmeans_cache_dir: !ref <save_folder>/kmeans_checkpoint
-kmeans_dataset: LibriSpeech-100-360-500
+kmeans_dataset: LibriSpeech
 freeze_ssl: True
 freeze_feature_extractor: True
 num_clusters: 1000
@@ -157,7 +157,7 @@ codec: !new:speechbrain.lobes.models.huggingface_transformers.discrete_ssl.Discr
    save_path: !ref <kmeans_cache_dir>
    ssl_model: !ref <ssl_model>
    kmeans_dataset: !ref <kmeans_dataset>
-   kmeans_repo_id: !ref <kmeans_repo_id>
+   vocoder_repo_id: !ref <kmeans_repo_id>
    num_clusters: !ref <num_clusters>
 
 discrete_embedding_layer: !new:custom_model.Discrete_EmbeddingLayer
