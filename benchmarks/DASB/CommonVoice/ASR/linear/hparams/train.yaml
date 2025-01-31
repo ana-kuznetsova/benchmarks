@@ -95,7 +95,7 @@ valid_dataloader_opts:
 ####################### Model parameters ###########################
 # Tokenizer parameters
 # These parameters should be set according to the tokenizer used to extract tokens saved in <tokens_folder>.
-vocab_size: 1000
+vocab_size: 1024
 num_codebooks: 6
 sample_rate: 16000
 
