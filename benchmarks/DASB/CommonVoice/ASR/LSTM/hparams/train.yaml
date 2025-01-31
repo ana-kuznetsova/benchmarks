@@ -12,11 +12,11 @@
 seed: 1986
 __set_seed: !apply:torch.manual_seed [!ref <seed>]
 language: cy # use 'cy' for Welsh  and 'eu' for Basque
-output_folder: !ref results/CommonVoice/speech_tokenizer/<language>/<seed>
+output_folder: !PLACEHOLDER
 test_wer_file: !ref <output_folder>/wer_test.txt
 save_folder: !ref <output_folder>/save
 train_log: !ref <output_folder>/train_log.txt
-cached_data_folder: cache/CommonVoice/<language>/LSTM/speech_tokenizer/<seed>
+cached_data_folder: cache/
 run_name: !PLACEHOLDER
 
 # Data files
@@ -32,15 +32,14 @@ skip_prep: False # Skip data preparation
 testing: False # If set to True, the test evlaution is done, otherwise skipped.
 
 tokens_folder: !PLACEHOLDER  # Path to the folder where extracted tokens are saved.
-pretrain_embeddings_folder: non
+pretrain_embeddings_folder: null
 
 avoid_if_longer_than: 10.0
 
 # Training parameters
 number_of_epochs: 20
 
-batch_size_exponent: 4 # @orion_step1: --batch_size_exponent~"uniform(2, 4,discrete=True)"
-batch_size: !ref 2 ** <batch_size_exponent>
+batch_size: 4
 test_batch_size: 1
 grad_accumulation_factor: 2
 max_grad_norm: 5.0
@@ -128,7 +127,7 @@ test_beam_search:
 
 ### Config for Tokenizer
 vocab_size: 1024
-num_codebooks: 2
+num_codebooks: 8
 sample_rate: 16000
 
 # Feature parameters
@@ -152,7 +151,7 @@ attention_mlp: !new:custom_model.AttentionMLP
 
 enc: !new:speechbrain.nnet.RNN.LSTM
    input_shape: [Null, Null, !ref <encoder_dim>]
-   num_layers: 2
+   num_layers: !ref <dnn_layers>
    bidirectional: True
    dropout: 0.2
    hidden_size: 1024
