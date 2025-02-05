@@ -24,6 +24,10 @@ import re
 import numpy as np
 from orion.client import report_objective
 from speechbrain.utils.data_utils import get_all_files
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_prototype(res_file, eval_metric):
@@ -128,22 +132,30 @@ if __name__ == "__main__":
     output_folder = sys.argv[1]
     eval_metric = sys.argv[2]
 
-    # Getting the list of the result files in the output folder
-    res_files = get_all_files(output_folder, match_and=["train_log.txt"])
+    try:
 
-    # Gettin a prototype file
-    prototype, n_metrics = get_prototype(res_files[0], eval_metric)
+        # Getting the list of the result files in the output folder
+        res_files = get_all_files(output_folder, match_and=["train_log.txt"])
 
-    # Extracting the metrics of interest
-    metrics = get_metrics(res_files, eval_metric)
+        # Gettin a prototype file
+        prototype, n_metrics = get_prototype(res_files[0], eval_metric)
 
-    # print aggregated metrics
-    aggregate_metrics(prototype, metrics)
+        # Extracting the metrics of interest
+        metrics = get_metrics(res_files, eval_metric)
 
-    final_metric = metrics[-1, :].mean()
+        # print aggregated metrics
+        aggregate_metrics(prototype, metrics)
 
-    # Report final metric to Orion
-    # Remember: orion expects metrics to be minimized!
-    if eval_metric == "acc" or eval_metric == "f1":
-        final_metric = 1 - final_metric
-    report_objective(final_metric)
+        final_metric = metrics.mean(axis=1).min()
+
+        # Report final metric to Orion
+        # Remember: orion expects metrics to be minimized!
+        if (
+            eval_metric == "acc"
+            or eval_metric == "f1"
+        ):
+            final_metric = 1 - final_metric
+        report_objective(final_metric)
+    except Exception as e:
+        logger.warning(f"Error processing aggregation: {e}")
+        report_objective(float('inf'))
