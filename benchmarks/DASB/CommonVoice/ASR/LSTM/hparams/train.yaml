@@ -11,9 +11,9 @@
 # Seed needs to be set at top of yaml, before objects with parameters are made
 seed: 1986
 __set_seed: !apply:torch.manual_seed [!ref <seed>]
-run_name: !PLACEHOLDER
+#run_name: !PLACEHOLDER
 language: cy # use 'cy' for Welsh  and 'eu' for Basque
-output_folder: !ref results/LSTM/<run_name>/<seed>
+output_folder: !ref results/LSTM/<language>/
 test_wer_file: !ref <output_folder>/wer_test.txt
 save_folder: !ref <output_folder>/save
 train_log: !ref <output_folder>/train_log.txt
