@@ -21,7 +21,6 @@ import time
 import os
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-print(base_dir)
 sys.path.append(base_dir)
 
 logger = logging.getLogger(__name__)
@@ -165,7 +164,7 @@ def dataio_prepare(hparams, tokenizer):
             key_max_value={"duration": hparams["avoid_if_longer_than"]},
         )
         # when sorting do not shuffle in dataloader ! otherwise is pointless
-        hparams["dataloader_options"]["shuffle"] = False
+        hparams["train_dataloader_opts"]["shuffle"] = False
 
     elif hparams["sorting"] == "descending":
         train_data = train_data.filtered_sorted(
@@ -174,7 +173,7 @@ def dataio_prepare(hparams, tokenizer):
             key_max_value={"duration": hparams["avoid_if_longer_than"]},
         )
         # when sorting do not shuffle in dataloader ! otherwise is pointless
-        hparams["dataloader_options"]["shuffle"] = False
+        hparams["train_dataloader_opts"]["shuffle"] = False
 
     elif hparams["sorting"] == "random":
         pass
