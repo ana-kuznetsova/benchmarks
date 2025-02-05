@@ -21,6 +21,7 @@ import time
 import os
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+print(base_dir)
 sys.path.append(base_dir)
 
 logger = logging.getLogger(__name__)
