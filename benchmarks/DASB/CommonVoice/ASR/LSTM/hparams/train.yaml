@@ -184,7 +184,7 @@ model: !new:torch.nn.ModuleList
 model_opt_class: !name:torch.optim.Adam
    lr: !ref <lr_model>
 
-lr_annealing_model: !new:speechbrain.nnet.schedulers.NewBobScheduler
+scheduler: !new:speechbrain.nnet.schedulers.NewBobScheduler
    initial_value: !ref <lr_model>
    improvement_threshold: 0.0025
    annealing_factor: 0.8
@@ -196,7 +196,7 @@ checkpointer: !new:speechbrain.utils.checkpoints.Checkpointer
    checkpoints_dir: !ref <save_folder>
    recoverables:
       model: !ref <model>
-      scheduler_model: !ref <lr_annealing_model>
+      scheduler_model: !ref <scheduler>
       attention_mlp: !ref <attention_mlp>
       discrete_embedding_layer: !ref <discrete_embedding_layer>
       counter: !ref <epoch_counter>
