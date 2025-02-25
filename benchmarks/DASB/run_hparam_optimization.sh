@@ -54,13 +54,13 @@ task=""
 dataset=""
 seed=1986
 nruns=""
-nruns_eval=10
+nruns_eval=3
 eval_metric="acc"
 config_file="orion/hparams_tpe.yaml"
 mne_dir=""
 orion_db_address=""
 orion_db_type="PickledDB"
-exp_max_trials=50
+exp_max_trials=10
 store_all=True
 compress_exp=True
 
