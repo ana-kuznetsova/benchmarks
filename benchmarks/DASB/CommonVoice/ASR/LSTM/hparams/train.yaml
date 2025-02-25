@@ -83,9 +83,6 @@ train_dataloader_opts:
    shuffle: True
    num_workers: !ref <num_workers>
 
-valid_dataloader_options:
-   batch_size: !ref <test_batch_size>
-
 test_dataloader_options:
    batch_size: !ref <test_batch_size>
 
