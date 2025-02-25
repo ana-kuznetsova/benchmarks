@@ -150,12 +150,9 @@ if __name__ == "__main__":
 
         # Report final metric to Orion
         # Remember: orion expects metrics to be minimized!
-        if (
-            eval_metric == "acc"
-            or eval_metric == "f1"
-        ):
+        if eval_metric == "acc" or eval_metric == "f1":
             final_metric = 1 - final_metric
         report_objective(final_metric)
     except Exception as e:
         logger.warning(f"Error processing aggregation: {e}")
-        report_objective(float('inf'))
+        report_objective(float("inf"))
