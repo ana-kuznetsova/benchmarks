@@ -88,10 +88,6 @@ valid_dataloader_options:
 test_dataloader_options:
    batch_size: !ref <test_batch_size>
 
-
-valid_dataloader_opts:
-   batch_size: !ref <batch_size>
-
 ####################### Model parameters ###########################
 # Tokenizer parameters
 # These parameters should be set according to the tokenizer used to extract tokens saved in <tokens_folder>.
@@ -138,7 +134,7 @@ epoch_counter: !new:speechbrain.utils.epoch_loop.EpochCounter
 
 # Modules
 tokens_loader: !new:utils.tokens.TokensLoader
-   data_path: !ref <tokens_folder
+   data_path: !ref <tokens_folder>
 
 discrete_embedding_layer: !new:model.custom_model.Discrete_EmbeddingLayer
    num_codebooks: !ref <num_codebooks>
