@@ -1,0 +1,63 @@
+# ############################################################################
+# Auido Tokenizer: Mimi
+# Extraction: Librispeech 960h
+# Authors: Jarod Duret 2024
+# ############################################################################
+# Seed needs to be set at top of yaml, before objects with parameters are made
+
+seed: 1986
+__set_seed: !apply:torch.manual_seed [!ref <seed>]
+output_folder: !ref results/mimi
+save_folder: !ref <output_folder>/save
+train_log: !ref <output_folder>/extraction_log.txt
+
+# Data files
+
+data_folder: /data/anakuzne/cv/cv-corpus-17.0-2024-03-15/cy
+train_tsv_file: !ref <data_folder>/train.tsv
+dev_tsv_file: !ref <data_folder>/dev.tsv
+test_tsv_file: !ref <data_folder>/test.tsv
+
+train_csv: !ref <save_folder>/train.csv
+dev_csv: !ref <save_folder>/dev.csv
+test_csv: !ref <save_folder>/test.csv
+
+language: cy
+accented_letters: True
+skip_prep: False
+convert_to_wav: False
+avoid_if_longer_than: 10.0
+
+batch_size: 1
+num_workers: 8
+src_key: wav
+id_key: ID
+
+# Dataloader options
+dataloader_opts:
+  batch_size: !ref <batch_size>
+  shuffle: True
+  num_workers: !ref <num_workers>
+
+####################### Model parameters ###########################
+# Tokenizer parameters
+model_hub: kyutai/mimi
+vocab_size: 1024
+num_codebooks: 32
+sample_rate: 24000
+# Feature parameters
+encoder_dim: 1024
+save_embedding: False
+
+tokenizer: !new:utils.tokenizer_interface.MimiTokenizer
+  source: !ref <model_hub>
+  save_path: !ref <save_folder>
+  num_codebooks: !ref <num_codebooks>
+
+
+tokens_extractor: !new:utils.tokens.TokensExtractor
+  tokenizer: !ref <tokenizer>
+  sample_rate: !ref <sample_rate>
+  src_key: !ref <src_key>
+  id_key: !ref <id_key>
+  dataloader_opts: !ref <dataloader_opts>

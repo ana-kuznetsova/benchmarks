@@ -1,0 +1,64 @@
+# ############################################################################
+# Auido Tokenizer: wavtokenizer
+# Extraction: Librispeech 960h
+# Authors: Jarod Duret 2024
+# ############################################################################
+# Seed needs to be set at top of yaml, before objects with parameters are made
+
+seed: 1986
+__set_seed: !apply:torch.manual_seed [!ref <seed>]
+output_folder: !ref results/wavtokenizer
+save_folder: !ref <output_folder>/save
+train_log: !ref <output_folder>/extraction_log.txt
+
+# Data files
+data_folder: /data/anakuzne/cv/cv-corpus-17.0-2024-03-15/cy
+train_tsv_file: !ref <data_folder>/train.tsv
+dev_tsv_file: !ref <data_folder>/dev.tsv
+test_tsv_file: !ref <data_folder>/test.tsv
+
+train_csv: !ref <save_folder>/train.csv
+dev_csv: !ref <save_folder>/dev.csv
+test_csv: !ref <save_folder>/test.csv
+
+language: cy
+accented_letters: True
+skip_prep: False
+convert_to_wav: False
+avoid_if_longer_than: 10.0
+
+batch_size: 1
+num_workers: 8
+src_key: wav
+id_key: ID
+
+# Dataloader options
+dataloader_opts:
+  batch_size: !ref <batch_size>
+  shuffle: True
+  num_workers: !ref <num_workers>
+
+# EnCodec parameters
+model_hub: novateur/WavTokenizer-medium-music-audio-75token
+config: wavtokenizer_mediumdata_music_audio_frame75_3s_nq1_code4096_dim512_kmeans200_attn.yaml
+checkpoint: wavtokenizer_medium_music_audio_320_24k_v2.ckpt
+sample_rate: 24000
+save_embedding: False
+num_codebooks: 1
+vocab_size: 4096
+
+# wavtokenizer model
+tokenizer: !new:utils.tokenizer_interface.WavTokenizerWrapper
+  source: !ref <model_hub>
+  save_path: !ref <save_folder>
+  checkpoint: !ref <checkpoint>
+  config: !ref <config>
+  freeze: True
+
+
+tokens_extractor: !new:utils.tokens.TokensExtractor
+  tokenizer: !ref <tokenizer>
+  sample_rate: !ref <sample_rate>
+  src_key: !ref <src_key>
+  id_key: !ref <id_key>
+  dataloader_opts: !ref <dataloader_opts>

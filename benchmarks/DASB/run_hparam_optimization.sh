@@ -54,13 +54,13 @@ task=""
 dataset=""
 seed=1986
 nruns=""
-nruns_eval=10
+nruns_eval=3
 eval_metric="acc"
 config_file="orion/hparams_tpe.yaml"
 mne_dir=""
 orion_db_address=""
 orion_db_type="PickledDB"
-exp_max_trials=50
+exp_max_trials=10
 store_all=True
 compress_exp=True
 
@@ -415,6 +415,6 @@ scp $best_yaml_file $final_yaml_file
 ./run_experiments.sh --hparams $final_yaml_file --data_folder $data_folder  --cached_data_folder $cached_data_folder \
   --output_folder $output_folder/best --task $task   --dataset $dataset  --seed $seed\
   --nruns $nruns_eval --eval_metric $eval_metric --eval_set test \
-  --rnd_dir $store_all --testing True $additional_flags
+  --rnd_dir False --testing True $additional_flags
 
 echo "The test performance with best hparams is available at  $output_folder/best"
