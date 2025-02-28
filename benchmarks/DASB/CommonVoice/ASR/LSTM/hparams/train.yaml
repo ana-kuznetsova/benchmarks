@@ -102,8 +102,8 @@ encoder_dim: 1024
 # If set to True, encoder_dim should match the dimension of the tokenizer. For Encodec, it is 128.
 pretrain_embeddings: False
 freeze_embedding: False
-embedding_dim: 256
-embedding_strg: concat
+embedding_dim: 1024
+embedding_strg: sum
 
 
 # LSTM parameters
