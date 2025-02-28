@@ -41,7 +41,7 @@ class ASR(sb.Brain):
 
         else:
             att_w = self.modules.attention_mlp(embeddings)  # [B, T, N-Q, 1]
-            embeddings = torch.matmul(att_w.transpose(2, -1), in_embs).squeeze(
+            embeddings = torch.matmul(att_w.transpose(2, -1), embeddings).squeeze(
                 -2
             )  # [B, T, D]
         att_w = self.modules.attention_mlp(embeddings)
