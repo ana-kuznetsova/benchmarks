@@ -41,11 +41,9 @@ class ASR(sb.Brain):
 
         else:
             att_w = self.modules.attention_mlp(embeddings)  # [B, T, N-Q, 1]
-            embeddings = torch.matmul(att_w.transpose(2, -1), embeddings).squeeze(
+            feats = torch.matmul(att_w.transpose(2, -1), embeddings).squeeze(
                 -2
             )  # [B, T, D]
-        att_w = self.modules.attention_mlp(embeddings)
-        feats = torch.matmul(att_w.transpose(2, -1), embeddings).squeeze(-2)
 
         if type(self.modules.encoder).__name__ == "VanillaNN":
             enc_out = self.modules.encoder(feats)
