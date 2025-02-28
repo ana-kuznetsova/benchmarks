@@ -36,12 +36,12 @@ class ASR(sb.Brain):
 
         embeddings = self.modules.discrete_embedding_layer(p_tokens)
         if  hasattr(self.hparams,'embedding_strg') and  self.hparams.embedding_strg == 'concat':
-            B, T, N_Q, D = in_embs.shape
-            in_embs = in_embs.view(B,T,N_Q *D)
+            B, T, N_Q, D = embeddings.shape
+            embeddings = embeddings.view(B,T,N_Q *D)
 
         else:
-            att_w = self.modules.attention_mlp(in_embs)  # [B, T, N-Q, 1]
-            in_embs = torch.matmul(att_w.transpose(2, -1), in_embs).squeeze(
+            att_w = self.modules.attention_mlp(embeddings)  # [B, T, N-Q, 1]
+            embeddings = torch.matmul(att_w.transpose(2, -1), in_embs).squeeze(
                 -2
             )  # [B, T, D]
         att_w = self.modules.attention_mlp(embeddings)
