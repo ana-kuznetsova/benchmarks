@@ -102,6 +102,8 @@ encoder_dim: 1024
 # If set to True, encoder_dim should match the dimension of the tokenizer. For Encodec, it is 128.
 pretrain_embeddings: False
 freeze_embedding: False
+embedding_dim: 256
+embedding_strg: concat
 
 
 # LSTM parameters
@@ -145,7 +147,7 @@ tokens_loader: !new:utils.tokens.TokensLoader
 discrete_embedding_layer: !new:model.custom_model.Discrete_EmbeddingLayer
    num_codebooks: !ref <num_codebooks>
    vocab_size: !ref <vocab_size>
-   emb_dim: !ref <encoder_dim>
+   emb_dim: !ref <embedding_dim>
 
 attention_mlp: !new:model.custom_model.AttentionMLP
    input_dim: !ref <encoder_dim>
