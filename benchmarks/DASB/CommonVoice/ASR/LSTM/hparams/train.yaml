@@ -104,6 +104,7 @@ pretrain_embeddings: False
 freeze_embedding: False
 embedding_dim: 1024
 embedding_strg: sum
+use_scalar_codebook: False
 
 
 # LSTM parameters
@@ -148,7 +149,7 @@ discrete_embedding_layer: !new:model.custom_model.Discrete_EmbeddingLayer
    num_codebooks: !ref <num_codebooks>
    vocab_size: !ref <vocab_size>
    emb_dim: !ref <embedding_dim>
-   scalar: False
+   scalar: !ref <use_scalar_codebook>
 
 attention_mlp: !new:model.custom_model.AttentionMLP
    input_dim: !ref <encoder_dim>
