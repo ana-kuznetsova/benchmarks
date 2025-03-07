@@ -148,6 +148,7 @@ discrete_embedding_layer: !new:model.custom_model.Discrete_EmbeddingLayer
    num_codebooks: !ref <num_codebooks>
    vocab_size: !ref <vocab_size>
    emb_dim: !ref <embedding_dim>
+   scalar: False
 
 attention_mlp: !new:model.custom_model.AttentionMLP
    input_dim: !ref <encoder_dim>
