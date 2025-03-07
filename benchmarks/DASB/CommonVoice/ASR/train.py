@@ -37,7 +37,8 @@ class ASR(sb.Brain):
         embeddings = self.modules.discrete_embedding_layer(p_tokens)
         if  hasattr(self.hparams,'embedding_strg') and  self.hparams.embedding_strg == 'concat':
             B, T, N_Q, D = embeddings.shape
-            feats = embeddings.view(B,T,N_Q *D)
+            #feats = embeddings.view(B,T,N_Q *D)
+            feats = embeddings.reshape(B, T, N_Q * D)
 
         else:
             att_w = self.modules.attention_mlp(embeddings)  # [B, T, N-Q, 1]
