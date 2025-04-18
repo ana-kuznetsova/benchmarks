@@ -204,17 +204,17 @@ class ASR(sb.Brain):
                 with open(self.hparams.test_wer_file, "w") as w:
                     self.wer_metric.write_stats(w)
 
-    def init_optimizers(self):
-        "Initializes the weights optimizer and model optimizer"
-        self.model_optimizer = self.hparams.model_opt_class(
-            self.hparams.model.parameters()
-        )
-        self.optimizers_dict = {
-            "model_optimizer": self.model_optimizer,
-        }
-        # Initializing the weights
-        if self.checkpointer is not None:
-            self.checkpointer.add_recoverable("modelopt", self.model_optimizer)
+    #def init_optimizers(self):
+    #    "Initializes the weights optimizer and model optimizer"
+    #    self.model_optimizer = self.hparams.model_opt_class(
+    ##        self.hparams.model.parameters()
+    #    )
+    #    self.optimizers_dict = {
+    #        "model_optimizer": self.model_optimizer,
+    #    }
+    #    # Initializing the weights
+    #    if self.checkpointer is not None:
+    #        self.checkpointer.add_recoverable("modelopt", self.model_optimizer)
 
 
 # Define custom data procedure
@@ -416,6 +416,7 @@ if __name__ == "__main__":
     # Trainer initialization
     asr_brain = ASR(
         modules=hparams["modules"],
+        opt_class=hparams["model_opt_class"],
         hparams=hparams,
         run_opts=run_opts,
         checkpointer=hparams["checkpointer"],
@@ -427,12 +428,12 @@ if __name__ == "__main__":
         tokenizer.sp.id_to_piece(i) for i in range(tokenizer.sp.vocab_size())
     ]
 
-    from speechbrain.decoders.ctc import CTCBeamSearcher
+    #from speechbrain.decoders.ctc import CTCBeamSearcher
 
-    test_searcher = CTCBeamSearcher(
-        **hparams["test_beam_search"],
-        vocab_list=vocab_list,
-    )
+    #test_searcher = CTCBeamSearcher(
+    #    **hparams["test_beam_search"],
+    #    vocab_list=vocab_list,
+    #)
 
     # Training
     start_time = time.time()  # Start the timer
@@ -450,8 +451,17 @@ if __name__ == "__main__":
     logger.info(f"Model execution time: {elapsed_time:.6f} seconds")
 
     # Testing
-    asr_brain.evaluate(
-        test_data,
-        min_key="WER",
-        test_loader_kwargs=hparams["test_dataloader_options"],
-    )
+    if hparams["testing"]:
+        # Testing
+        if not os.path.exists(hparams["output_wer_folder"]):
+            os.makedirs(hparams["output_wer_folder"])
+
+        
+            asr_brain.hparams.output_wer_folder = os.path.join(
+                hparams["output_wer_folder"], f"wer_test.txt"
+            )
+            asr_brain.evaluate(
+                test_data,
+                test_loader_kwargs=hparams["test_dataloader_opts"],
+                min_key="ACC",
+            )
