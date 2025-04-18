@@ -1,0 +1,128 @@
+import torch
+from model.sq_codec import decimal_to_ternary_matrix
+
+class AttentionMLP(torch.nn.Module):
+    def __init__(self, input_dim, hidden_dim):
+        super(AttentionMLP, self).__init__()
+        self.layers = torch.nn.Sequential(
+            torch.nn.Linear(input_dim, hidden_dim),
+            torch.nn.ReLU(),
+            torch.nn.Linear(hidden_dim, 1, bias=False),
+        )
+
+    def forward(self, x):
+        x = self.layers(x)
+        att_w = torch.nn.functional.softmax(x, dim=2)
+        return att_w
+
+
+class Discrete_EmbeddingLayer(torch.nn.Module):
+    """This class handles embedding layers  for discrete tokens.
+
+    Arguments
+    ---------
+    num_codebooks: int ,
+        number of codebooks of the tokenizer.
+    vocab_size : int,
+        size of the dictionary of embeddings
+    emb_dim: int ,
+        the size of each embedding vector
+    pad_index: int (default: 0),
+        If specified, the entries at padding_idx do not contribute to the gradient.
+    init: boolean (default: False):
+        If set to True, init the embedding with the tokenizer embedding otherwise init randomly.
+    freeze: boolean (default: False)
+       If True, the embedding is frozen. If False, the model will be trained
+        alongside with the rest of the pipeline.
+
+    Example
+    -------
+    >>> from speechbrain.lobes.models.huggingface_transformers.encodec import Encodec
+    >>> model_hub = "facebook/encodec_24khz"
+    >>> save_path = "savedir"
+    >>> model = Encodec(model_hub, save_path)
+    >>> audio = torch.randn(4, 1000)
+    >>> length = torch.tensor([1.0, .5, .75, 1.0])
+    >>> tokens, emb = model.encode(audio, length)
+    >>> print(tokens.shape)
+    torch.Size([4, 4, 2])
+    >>> emb= Discrete_EmbeddingLayer(2, 1024, 1024)
+    >>> in_emb = emb(tokens)
+    >>> print(in_emb.shape)
+    torch.Size([4, 4, 2, 1024])
+    """
+
+    def __init__(
+        self,
+        num_codebooks,
+        vocab_size,
+        emb_dim,
+        init=False,
+        freeze=False,
+        hidden_dim=None,
+        scalar = False,
+    ):
+        super(Discrete_EmbeddingLayer, self).__init__()
+        self.scalar = scalar
+        self.vocab_size = vocab_size
+        self.emb_dim = emb_dim
+        self.num_codebooks = (
+            len(num_codebooks)
+            if isinstance(num_codebooks, list)
+            else num_codebooks
+        )
+        self.freeze = freeze
+        if not self.scalar: 
+            self.embedding = torch.nn.Embedding(
+                self.num_codebooks * vocab_size, emb_dim
+            ).requires_grad_(not self.freeze)
+            self.init = init
+
+        # Add a linear layer to match dimensions if necessary
+        if hidden_dim is not None and hidden_dim != emb_dim:
+            self.proj_layer = torch.nn.Linear(emb_dim, hidden_dim)
+        else:
+            self.proj_layer = None
+
+    def init_embedding(self, weights):
+        self.embedding.weight.data.copy_(weights)
+
+    def forward(self, in_tokens):
+        """Computes the embedding for discrete tokens.
+        a sample.
+
+        Arguments
+        ---------
+        in_tokens : torch.Tensor
+            A (Batch x Time x num_codebooks)
+            audio sample
+        Returns
+        -------
+        in_embs : torch.Tensor
+        """
+       
+        
+        if self.scalar:
+            with torch.no_grad():
+                in_tokens = in_tokens.permute(2, 0, 1)
+                in_embs = []
+                for i in range(self.num_codebooks):
+                    tmp_list = decimal_to_ternary_matrix(in_tokens[i, :, :], D=self.emb_dim) - 1
+                    in_embs.append(tmp_list)
+                in_embs = torch.stack(in_embs, dim=0).float().to(in_tokens.device)  # Shape: (num_codebooks, B, D, T)
+                # Permute to match (B, T, num_codebook, D)
+                in_embs = in_embs.permute(1, 3, 0, 2)  # Shape: (3, 150, 4, 9)
+        else:
+            with torch.set_grad_enabled(not self.freeze):                
+                #  Add unique token IDs across diffrent codebooks by adding num_codebooks * vocab_size
+                in_tokens += torch.arange(
+                    0,
+                    self.num_codebooks * self.vocab_size,
+                    self.vocab_size,
+                    device=in_tokens.device,
+                )
+                # Forward Pass to embedding and
+                in_embs = self.embedding(in_tokens)
+        if self.proj_layer is not None:
+            in_embs = self.proj_layer(in_embs)
+        return in_embs
