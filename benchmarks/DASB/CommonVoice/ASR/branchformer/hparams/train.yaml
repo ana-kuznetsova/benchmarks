@@ -13,7 +13,8 @@ seed: 1986
 __set_seed: !apply:torch.manual_seed [!ref <seed>]
 
 language: cy # use 'cy' for Welsh  and 'eu' for Basque
-output_folder: !ref results/<language>/
+output_folder: !PLACEHOLDER
+output_wer_folder: !ref <output_folder>/wer.txt
 test_wer_file: !ref <output_folder>/wer_test.txt
 save_folder: !ref <output_folder>/save
 train_log: !ref <output_folder>/train_log.txt
@@ -21,7 +22,7 @@ testing: True
 
 # Data files
 data_folder: !PLACEHOLDER # e.g, /local/cv-corpus-11.0-2022-09-21/<language>
-cached_data_folder: !PLACEHOLDER # e.g., path/to/cache
+#cached_data_folder: !PLACEHOLDER # e.g., path/to/cache
 train_tsv_file: !ref <data_folder>/train.tsv  # Standard CommonVoice .tsv files
 dev_tsv_file: !ref <data_folder>/dev.tsv  # Standard CommonVoice .tsv files
 test_tsv_file: !ref <data_folder>/test.tsv  # Standard CommonVoice .tsv files
@@ -33,7 +34,7 @@ skip_prep: False # Skip data preparation
 
 
 #tokens_folder: !PLACEHOLDER  # Path to the folder where extracted tokens are saved.
-tokens_folder: /data/anakuzne/benchmarks/benchmarks/DASB/CommonVoice/extraction/results/hubert/save/cy
+tokens_folder: /data/anakuzne/benchmarks/benchmarks/DASB/CommonVoice/extraction/results/hubert/cy/save/cy
 pretrain_embeddings_folder: none
 
 # Training parameters
