@@ -32,8 +32,8 @@ class ASR(sb.Brain):
         """Forward computations from the waveform batches to the output probabilities."""
         batch = batch.to(self.device)
         wavs, wav_lens = batch.sig
-        print("DEBUG", batch.speech_tokens)
         p_tokens, _ = batch.speech_tokens
+        tokens_bos, _ = batch.tokens_bos
 
         embeddings = self.modules.discrete_embedding_layer(p_tokens)
         if  hasattr(self.hparams,'embedding_strg') and  self.hparams.embedding_strg == 'concat':
@@ -273,7 +273,6 @@ def dataio_prepare(hparams, tokenizer):
     @sb.utils.data_pipeline.provides("speech_tokens")
     def tokens_pipeline(id):
         tokens = tokens_loader.tokens_by_uttid(id, num_codebooks=num_codebooks)
-        print("DEBUG tokens", tokens.shape)
         return tokens
 
     sb.dataio.dataset.add_dynamic_item(datasets, tokens_pipeline)
