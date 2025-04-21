@@ -53,7 +53,6 @@ class ASR(sb.Brain):
             enc_out, _ = self.modules.encoder(feats)
         
         elif type(self.modules.encoder).__name__ == "TransformerASR":
-            print("enc out", len(self.modules.encoder(feats, tokens_bos, wav_lens, pad_idx=self.hparams.pad_index)))
             enc_out, pred = self.modules.encoder(feats, tokens_bos, wav_lens, pad_idx=self.hparams.pad_index)
             pred = self.modules.seq_lin(pred)
             p_seq = self.hparams.log_softmax(pred)
@@ -61,11 +60,13 @@ class ASR(sb.Brain):
         else:
             raise NotImplementedError
 
-        p_tokens = None
-        current_epoch = self.hparams.epoch_counter.current
+        
         # output layer for ctc log-probabilities
         logits = self.modules.ctc_lin(enc_out)
         p_ctc = self.hparams.log_softmax(logits)
+
+        p_tokens = None
+        current_epoch = self.hparams.epoch_counter.current
 
         if  stage == sb.Stage.VALID and current_epoch % self.hparams.valid_search_interval == 0:
             if type(self.modules.encoder).__name__ == "TransformerASR":
@@ -81,10 +82,10 @@ class ASR(sb.Brain):
                 p_tokens, _, _, _ = self.hparams.test_search(
                     enc_out.detach(), wav_lens
                 )
-                return p_ctc, p_seq, wav_lens, p_tokens
             else:
                 p_tokens = test_searcher(p_ctc, wav_lens)
                 return p_ctc, wav_lens, p_tokens
+        return p_ctc, p_seq, wav_lens, p_tokens
 
     def compute_objectives(self, predictions, batch, stage):
         """Computes the loss (CTC+NLL) given predictions and targets."""
