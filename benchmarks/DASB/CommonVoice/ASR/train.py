@@ -53,7 +53,8 @@ class ASR(sb.Brain):
             enc_out, _ = self.modules.encoder(feats)
         
         elif type(self.modules.encoder).__name__ == "TransformerASR":
-            enc_out, pred, _, _ = self.modules.encoder(feats, tokens_bos, wav_lens, pad_idx=self.hparams.pad_index)
+            print("enc out", len(self.modules.encoder(feats, tokens_bos, wav_lens, pad_idx=self.hparams.pad_index)))
+            enc_out, pred = self.modules.encoder(feats, tokens_bos, wav_lens, pad_idx=self.hparams.pad_index)
             pred = self.modules.seq_lin(pred)
             p_seq = self.hparams.log_softmax(pred)
             p_seq = p_seq
