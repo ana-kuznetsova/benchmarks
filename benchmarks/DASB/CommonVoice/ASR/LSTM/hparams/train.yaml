@@ -13,8 +13,9 @@ seed: 1986
 __set_seed: !apply:torch.manual_seed [!ref <seed>]
 
 language: cy # use 'cy' for Welsh  and 'eu' for Basque
-output_folder: !ref results/LSTM/<language>/
+output_folder: !PLACEHOLDER
 test_wer_file: !ref <output_folder>/wer_test.txt
+output_wer_folder: !ref <output_folder>/wer.txt
 save_folder: !ref <output_folder>/save
 train_log: !ref <output_folder>/train_log.txt
 testing: True
