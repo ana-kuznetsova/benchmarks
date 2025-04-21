@@ -192,7 +192,7 @@ class ASR(sb.Brain):
             )
             self.checkpointer.save_and_keep_only(
                 meta={"ACC": stage_stats["ACC"], "epoch": epoch},
-                min_keys=["ACC"],
+                max_keys=["ACC"],
                 num_to_keep=self.hparams.avg_checkpoints,
             )
         elif stage == sb.Stage.TEST:
@@ -463,5 +463,5 @@ if __name__ == "__main__":
             asr_brain.evaluate(
                 test_data,
                 test_loader_kwargs=hparams["test_dataloader_opts"],
-                min_key="ACC",
+                max_key="ACC",
             )
